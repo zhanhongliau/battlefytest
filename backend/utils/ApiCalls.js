@@ -60,13 +60,24 @@ const getSummonerMatchDetailsByAccountId = (accountId, id) => {
     return getMatchDetails(id)
         .then(res => {
             // Find player in participant identity list
-            console.log("Match:", res.participantIdentities);
+            console.log("Match:", res);
             const matchingParticipants = res.participantIdentities.filter(item => (item.player.accountId == accountId));
             //console.log("MATCHING PARTS", matchingParticipants);
             const participantId = matchingParticipants[0].participantId;
+            const participant = res.participants.filter(item => item.participantId == participantId)[0];
+            const teamId = participant.teamId;
+            const teamDetails = res.teams.filter(item => item.teamId == teamId);
             const participantDetails = res.participants.filter(item => item.participantId == participantId);
             //console.log("PART DETAILS", participantDetails);
-            return participantDetails[0];
+            return {
+                gameCreation: res.gameCreation,
+                gameDuration: res.gameDuration,
+                mapId: res.mapId,
+                gameMode: res.gameMode,
+                gameType: res.gameType,
+                team: teamDetails,
+                ...participantDetails[0],
+            };
         })
 }
 
