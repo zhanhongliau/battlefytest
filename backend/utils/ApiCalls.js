@@ -23,7 +23,7 @@ const getSummonerDetails = (name) => {
         })
 }
 
-const getSummonerMatchesByName = (name) => {
+const getSummonerMatchesByName = (name, beginIndex = 0, endIndex = 9) => {
     return getSummonerDetails(name)
         .then(res => {
             if (res.hasOwnProperty('accountId')){
@@ -33,25 +33,50 @@ const getSummonerMatchesByName = (name) => {
             }
         })
         .then(id => {
-            return kayn.Matchlist.by.accountID(id)
+            return kayn.Matchlist.by.accountID(id).query({ beginIndex: 0, endIndex: 9})
                 .then(res => res);
         });
 };
 
+const getSummonerMatchesByAccountId = (accountId, beginIndex = 0, endIndex = 9) => {
+    return kayn.Matchlist.by.accountID(accountId).query({ beginIndex, endIndex })
+        .then(result => {
+            console.log("Got summoner matches", result);
+            let promises = result.matches.map(item => getSummonerMatchDetailsByAccountId(accountId, item.gameId));
+            return Promise.all(promises);
+        })
+};
+
+
 const getMatchDetails = (id) => {
     return kayn.Match.get(id)
         .then(res => {
-            console.log(res);
+            //console.log(res);
             return res;
         });
+}
+
+const getSummonerMatchDetailsByAccountId = (accountId, id) => {
+    return getMatchDetails(id)
+        .then(res => {
+            // Find player in participant identity list
+            console.log("Match:", res.participantIdentities);
+            const matchingParticipants = res.participantIdentities.filter(item => (item.player.accountId == accountId));
+            //console.log("MATCHING PARTS", matchingParticipants);
+            const participantId = matchingParticipants[0].participantId;
+            const participantDetails = res.participants.filter(item => item.participantId == participantId);
+            //console.log("PART DETAILS", participantDetails);
+            return participantDetails[0];
+        })
 }
 
 const getSummonerMatchDetails = (name, id) => {
     return getMatchDetails(id)
         .then(res => {
             // Find player in participant identity list
+            console.log("Match:", res.participantIdentities);
             const matchingParticipants = res.participantIdentities.filter(item => (item.player.summonerName == name));
-            console.log("MATCHING PARTS", matchingParticipants);
+            //console.log("MATCHING PARTS", matchingParticipants);
             const participantId = matchingParticipants[0].participantId;
             const participantDetails = res.participants.filter(item => item.participantId == participantId);
             //console.log("PART DETAILS", participantDetails);
@@ -62,6 +87,8 @@ const getSummonerMatchDetails = (name, id) => {
 module.exports = {
     getSummonerDetails,
     getSummonerMatchesByName,
+    getSummonerMatchesByAccountId,
     getMatchDetails,
-    getSummonerMatchDetails
+    getSummonerMatchDetails,
+    getSummonerMatchesByAccountId,
 };

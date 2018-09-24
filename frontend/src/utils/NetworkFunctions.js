@@ -29,6 +29,19 @@ export const getSummonerMatches = (name) => {
                 throw Error("Bad response status:" + res.status + " " + res.statusText);
             }
         })
-        .then(json => console.log(json))
+        //.then(json => console.log(json))
         .catch(err => console.error(err));
 };
+
+export const getSummonerMatchDetails = (name) => {
+    return fetch(API_URL + 'matchDetailsForSummoner/' + name, headers)
+        .then(res => {
+            if (isGoodStatus(res)){
+                return res.json();
+            } else {
+                throw Error("Bad response status:" + res.status + " " + res.statusText);
+            }
+        })
+        .then(json => console.log(json))
+        .catch(err => console.error(err));
+}
