@@ -1,0 +1,6 @@
+#!/bin/bash
+
+source ../.env
+echo "${RIOT_API_KEY}"
+REQ_URL="https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/RiotSchmick?api_key=${RIOT_API_KEY}"
+http $REQ_URL
