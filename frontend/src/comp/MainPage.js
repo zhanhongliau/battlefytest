@@ -11,7 +11,8 @@ import {
     Input,
     Grid,
     Button,
-    Header
+    Header,
+    Loader
 } from 'semantic-ui-react';
 
 const testObj = {
@@ -215,7 +216,7 @@ class MainMenu extends Component{
                 <Menu.Menu position='right'>
                     <Menu.Item>
                         <Input placeholder='Search...' onChange={(e, data) => {this.setState({summonerName: data.value})}}/>
-                        <Button icon='search' onClick={() => this.props.setSearchName(this.state.summonerName)}/>
+                        <Button icon='search' onClick={() => {this.props.showSpinner();this.props.setSearchName(this.state.summonerName)}}/>
                     </Menu.Item>
                 </Menu.Menu>
             </Menu>
@@ -223,13 +224,32 @@ class MainMenu extends Component{
     }
 }
 
-const MatchItem = (match) => (
+const MatchItem = ({match}) => (
     <Grid.Row divided>
         <Grid.Column>
-            <Segment basic>
+            <Header as='h4'>General</Header>
+            <Segment.Group style={{padding: '1em'}}>
+                <Segment>
+                    Win: {match.stats.win ? "Victory" : "Defeat"}
+                </Segment>
+                <Segment>
+                    Summoner Name: {match.summonerName}
+                </Segment>
+            </Segment.Group>
+        </Grid.Column>
+        <Grid.Column>
+            <Header as='h4'>Items/Spells</Header>
+            <Segment>
             </Segment>
         </Grid.Column>
         <Grid.Column>
+            <Header as='h4'>Times</Header>
+            <Segment>
+                Game Length: {match.gameDuration}
+            </Segment>
+        </Grid.Column>
+        <Grid.Column>
+            <Header as='h4'>Champion Details</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment basic vertical>
                     Champion: {match.championId}
@@ -247,14 +267,17 @@ export default class MainPage extends Component {
         super(props);
         this.state = {
             summonerName: "",
+            showSpinner: false,
             matches: []
         };
         this.setSearchName = this.setSearchName.bind(this);
         this.processMatches = this.processMatches.bind(this);
+        this.hideSpinner = this.hideSpinner.bind(this);
+        this.showSpinner = this.showSpinner.bind(this);
     }
 
     async setSearchName(summonerName){
-        await this.setState({ summonerName });
+        await this.setState({ summonerName, matches: [] });
         if (summonerName){
             getBasicSummonerDetails(summonerName);
             getSummonerMatches(summonerName)
@@ -263,8 +286,17 @@ export default class MainPage extends Component {
     }
 
     processMatches(json){
+        this.hideSpinner();
         console.log("Got matches:", json);
         this.setState({ matches: json });
+    }
+
+    hideSpinner(){
+        this.setState({ showSpinner: false });
+    }
+
+    showSpinner(){
+        this.setState({ showSpinner: true });
     }
 
     componentDidMount(){
@@ -281,9 +313,10 @@ export default class MainPage extends Component {
                         <Header as='h1'>{this.state.summonerName}</Header>
                     </Segment>
                     <Segment>
-                        <Grid>
-                            {/*this.state.matches.map((match, index) => (<MatchItem key={index} {...match} />))*/}
-                            <MatchItem {...testObj} />
+                        <Loader active={this.state.showSpinner} />
+                        <Grid columns="equal">
+                            {this.state.matches.map((match, index) => (<MatchItem key={index} match={match} />))}
+                            {/*<MatchItem match={testObj} />*/}
                         </Grid>
                     </Segment>
                 </Segment.Group>

@@ -75,6 +75,7 @@ const getSummonerMatchDetailsByAccountId = (accountId, id) => {
                 mapId: res.mapId,
                 gameMode: res.gameMode,
                 gameType: res.gameType,
+                summonerName: matchingParticipants[0].player.summonerName,
                 team: teamDetails,
                 ...participantDetails[0],
             };
