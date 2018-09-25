@@ -238,24 +238,28 @@ const Item = ({id}) => (
 const MatchItem = ({match}) => (
     <Grid.Row>
         <Grid.Column>
-            <Header as='h4'>General</Header>
+            <Header as='h3'>General</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment>
-                    {match.stats.win ? "Victory" : "Defeat"}
+                    {match.stats.win ?
+                            <Header as='h5' color='green'>Victory</Header>
+                            :
+                            <Header as='h5' color='red'>Defeat</Header>
+                    }
                 </Segment>
                 <Segment>
-                    Summoner Name: {match.summonerName}
+                    <Header as='h4'>Summoner Name:</Header> {match.summonerName}
                 </Segment>
             </Segment.Group>
         </Grid.Column>
         <Grid.Column>
-            <Header as='h4'>Items/Spells</Header>
+            <Header as='h3'>Items/Spells</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment>
-                    Spells: {match.spell1Id}/{match.spell2Id}
+                    <Header as='h4'>Spells:</Header> {match.spell1Id}/{match.spell2Id}
                 </Segment>
                 <Segment>
-                    Items:
+                    <Header as='h4'>Items:</Header>
                     <Grid columns='equal'>
                         <Grid.Row>
                             <Grid.Column><Item id={match.stats.item0} /></Grid.Column>
@@ -277,22 +281,22 @@ const MatchItem = ({match}) => (
             </Segment.Group>
         </Grid.Column>
         <Grid.Column>
-            <Header as='h4'>Times</Header>
+            <Header as='h3'>Times</Header>
             <Segment>
-                Game Length: {moment(match.gameDuration, 'X').format("mm:ss")}
+                <Header as='h4'>Game Length:</Header> {moment(match.gameDuration, 'X').format("mm:ss")}
             </Segment>
         </Grid.Column>
         <Grid.Column>
-            <Header as='h4'>Champion Details</Header>
+            <Header as='h3'>Champion Details</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment basic vertical>
-                    Champion: {match.championId}
+                    <Header as='h4'>Champion:</Header> {match.championId}
                 </Segment>
                 <Segment basic vertical>
-                    Champion Level: {match.stats.champLevel}
+                    <Header as='h4'>Champion Level:</Header> {match.stats.champLevel}
                 </Segment>
                 <Segment basic vertical>
-                    KDA: {match.stats.kills}/{match.stats.deaths}/{match.stats.assists}
+                    <Header as='h4'>KDA:</Header> {match.stats.kills}/{match.stats.deaths}/{match.stats.assists}
                 </Segment>
             </Segment.Group>
         </Grid.Column>
