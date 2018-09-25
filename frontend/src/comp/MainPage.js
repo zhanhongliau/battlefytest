@@ -246,9 +246,9 @@ const MatchItem = ({match}) => (
             <Segment.Group style={{padding: '1em'}}>
                 <Segment>
                     {match.stats.win ?
-                        <Header as='h5' color='green'>Victory</Header>
+                        <Header as='h3' color='green'>Victory</Header>
                         :
-                        <Header as='h5' color='red'>Defeat</Header>
+                        <Header as='h3' color='red'>Defeat</Header>
                     }
                 </Segment>
                 <Segment>
@@ -260,7 +260,7 @@ const MatchItem = ({match}) => (
             <Header as='h3'>Items/Spells</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment>
-                    <Header as='h4'>Spells:</Header> {match.spell1Id}/{match.spell2Id}
+                    <Header as='h4'>Spells:</Header> {match.spellNames.spell1Id}/{match.spellNames.spell2Id}
                 </Segment>
                 <Segment>
                     <Header as='h4'>Items:</Header>

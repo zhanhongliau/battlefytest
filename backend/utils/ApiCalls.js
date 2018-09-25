@@ -75,6 +75,11 @@ const getItemName = (id) => {
     else return items.data[item].name;
 }
 
+const getSummonerSpellName = (id) => {
+    let spell = Object.keys(summonerSpells.data).filter(item => summonerSpells.data[item].key == id);
+    return spell[0];
+}
+
 const getSummonerMatchDetailsByAccountId = (accountId, id) => {
     return getMatchDetails(id)
         .then(res => {
@@ -87,7 +92,6 @@ const getSummonerMatchDetailsByAccountId = (accountId, id) => {
             const teamId = participant.teamId;
             const teamDetails = res.teams.filter(item => item.teamId == teamId);
             const participantDetails = res.participants.filter(item => item.participantId == participantId);
-            participantDetails[0].championId
             //console.log("PART DETAILS", participantDetails);
             const championName = getChampionName(participantDetails[0].championId);
             const itemNames = {
@@ -99,6 +103,10 @@ const getSummonerMatchDetailsByAccountId = (accountId, id) => {
                 'item5': getItemName(participantDetails[0].stats.item5),
                 'item6': getItemName(participantDetails[0].stats.item6),
             };
+            const spellNames = {
+                'spell1Id': getSummonerSpellName(participantDetails[0].spell1Id),
+                'spell2Id': getSummonerSpellName(participantDetails[0].spell2Id)
+            };
             return {
                 gameCreation: res.gameCreation,
                 gameDuration: res.gameDuration,
@@ -109,6 +117,8 @@ const getSummonerMatchDetailsByAccountId = (accountId, id) => {
                 summonerName: matchingParticipants[0].player.summonerName,
                 team: teamDetails,
                 itemNames: itemNames,
+                runes: participantDetails[0].runes,
+                spellNames: spellNames,
                 ...participantDetails[0],
             };
         })
@@ -134,5 +144,4 @@ module.exports = {
     getSummonerMatchesByAccountId,
     getMatchDetails,
     getSummonerMatchDetails,
-    getSummonerMatchesByAccountId,
 };
