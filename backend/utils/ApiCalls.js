@@ -60,7 +60,7 @@ const getSummonerMatchDetailsByAccountId = (accountId, id) => {
     return getMatchDetails(id)
         .then(res => {
             // Find player in participant identity list
-            console.log("Match:", res);
+            //console.log("Match:", res);
             const matchingParticipants = res.participantIdentities.filter(item => (item.player.accountId == accountId));
             //console.log("MATCHING PARTS", matchingParticipants);
             const participantId = matchingParticipants[0].participantId;

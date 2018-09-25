@@ -12,8 +12,10 @@ import {
     Grid,
     Button,
     Header,
-    Loader
+    Loader,
+    Image
 } from 'semantic-ui-react';
+import moment from 'moment';
 
 const testObj = {
     "gameCreation": 1537826517129,
@@ -224,13 +226,22 @@ class MainMenu extends Component{
     }
 }
 
+const ITEM_URL='http://ddragon.leagueoflegends.com/cdn/6.24.1/img/item/';
+
+const Item = ({id}) => (
+    id ?
+        <Image src={ITEM_URL + id + '.png'} />
+        :
+        null
+);
+
 const MatchItem = ({match}) => (
-    <Grid.Row divided>
+    <Grid.Row>
         <Grid.Column>
             <Header as='h4'>General</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment>
-                    Win: {match.stats.win ? "Victory" : "Defeat"}
+                    {match.stats.win ? "Victory" : "Defeat"}
                 </Segment>
                 <Segment>
                     Summoner Name: {match.summonerName}
@@ -239,13 +250,36 @@ const MatchItem = ({match}) => (
         </Grid.Column>
         <Grid.Column>
             <Header as='h4'>Items/Spells</Header>
-            <Segment>
-            </Segment>
+            <Segment.Group style={{padding: '1em'}}>
+                <Segment>
+                    Spells: {match.spell1Id}/{match.spell2Id}
+                </Segment>
+                <Segment>
+                    Items:
+                    <Grid columns='equal'>
+                        <Grid.Row>
+                            <Grid.Column><Item id={match.stats.item0} /></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item1} /></Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column><Item id={match.stats.item2} /></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item3} /></Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column><Item id={match.stats.item4} /></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item5} /></Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column><Item id={match.stats.item6} /></Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Segment>
+            </Segment.Group>
         </Grid.Column>
         <Grid.Column>
             <Header as='h4'>Times</Header>
             <Segment>
-                Game Length: {match.gameDuration}
+                Game Length: {moment(match.gameDuration, 'X').format("mm:ss")}
             </Segment>
         </Grid.Column>
         <Grid.Column>
@@ -253,6 +287,9 @@ const MatchItem = ({match}) => (
             <Segment.Group style={{padding: '1em'}}>
                 <Segment basic vertical>
                     Champion: {match.championId}
+                </Segment>
+                <Segment basic vertical>
+                    Champion Level: {match.stats.champLevel}
                 </Segment>
                 <Segment basic vertical>
                     KDA: {match.stats.kills}/{match.stats.deaths}/{match.stats.assists}
@@ -314,7 +351,7 @@ export default class MainPage extends Component {
                     </Segment>
                     <Segment>
                         <Loader active={this.state.showSpinner} />
-                        <Grid columns="equal">
+                        <Grid columns="equal" divided='vertically'>
                             {this.state.matches.map((match, index) => (<MatchItem key={index} match={match} />))}
                             {/*<MatchItem match={testObj} />*/}
                         </Grid>
