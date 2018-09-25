@@ -66,13 +66,11 @@ const getChampionName = (id) => {
     let champion = Object.keys(champions.data).filter(item => {
         return champions.data[item].key == id
     });
-    console.log("Found champion: ", champion);
     return champion[0];
 }
 
 const getItemName = (id) => {
     let item = Object.keys(items.data).filter(item => item == id);
-    console.log("Found item: ", item);
     if (item.length == 0) return "";
     else return items.data[item].name;
 }

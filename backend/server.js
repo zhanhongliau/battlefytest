@@ -28,12 +28,14 @@ app.get('/summonerDetails/:summonerName', (req, res) => {
 
 // TODO allow begin/end indices
 app.get('/summonerMatches/:summonerName', (req, res) => {
-    console.log(req.params.summonerName);
+    const beginIndex = req.query.beginIndex ? req.query.beginIndex : 0;
+    const endIndex = req.query.endIndex ? req.query.endIndex : 9;
+    console.log("Getting indices: ", beginIndex, endIndex);
     getSummonerDetails(req.params.summonerName)
         .then(res => {
             return res.accountId;
         })
-        .then(accountId => getSummonerMatchesByAccountId(accountId))
+        .then(accountId => getSummonerMatchesByAccountId(accountId, beginIndex, endIndex))
         .then(result => {
             res.status(200).json(result);
         })

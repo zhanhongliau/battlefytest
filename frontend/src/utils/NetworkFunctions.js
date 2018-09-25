@@ -20,8 +20,8 @@ export const getBasicSummonerDetails = (name) => {
         .catch(err => console.error(err));
 };
 
-export const getSummonerMatches = (name) => {
-    return fetch(API_URL + 'summonerMatches/' + name, headers)
+export const getSummonerMatches = (name, beginIndex = 0, endIndex = 9) => {
+    return fetch(API_URL + 'summonerMatches/' + name + '?beginIndex=' + beginIndex + '&endIndex=' + endIndex, headers)
         .then(res => {
             if (isGoodStatus(res)){
                 return res.json();

@@ -286,9 +286,17 @@ const MatchItem = ({match}) => (
         </Grid.Column>
         <Grid.Column>
             <Header as='h3'>Times</Header>
-            <Segment>
-                <Header as='h4'>Game Length:</Header> {moment(match.gameDuration, 'X').format("mm:ss")}
-            </Segment>
+            <Segment.Group style={{padding: '1em'}}>
+                <Segment>
+                    <Header as='h4'>Game Length:</Header> {moment(match.gameDuration, 'X').format("mm:ss")}
+                </Segment>
+                <Segment>
+                    <Header as='h4'>CS Per Minute</Header> {
+                        Number.parseFloat((match.stats.totalMinionsKilled + match.stats.neutralMinionsKilled)/moment(match.gameDuration, 'X').minutes())
+                        .toFixed(2)
+                    }
+                </Segment>
+            </Segment.Group>
         </Grid.Column>
         <Grid.Column>
             <Header as='h3'>Champion Details</Header>
@@ -302,6 +310,11 @@ const MatchItem = ({match}) => (
                 <Segment basic vertical>
                     <Header as='h4'>KDA:</Header> {match.stats.kills}/{match.stats.deaths}/{match.stats.assists}
                 </Segment>
+                <Segment basic vertical>
+                    <Header as='h4'>Total Creep Score:</Header> {
+                        match.stats.totalMinionsKilled + match.stats.neutralMinionsKilled
+                    }
+                </Segment>
             </Segment.Group>
         </Grid.Column>
     </Grid.Row>
@@ -312,6 +325,8 @@ export default class MainPage extends Component {
         super(props);
         this.state = {
             summonerName: "",
+            beginIndex: 0,
+            endIndex: 9,
             showSpinner: false,
             matches: []
         };
@@ -319,6 +334,7 @@ export default class MainPage extends Component {
         this.processMatches = this.processMatches.bind(this);
         this.hideSpinner = this.hideSpinner.bind(this);
         this.showSpinner = this.showSpinner.bind(this);
+        this.getMoreMatches = this.getMoreMatches.bind(this);
     }
 
     async setSearchName(summonerName){
@@ -336,12 +352,35 @@ export default class MainPage extends Component {
         this.setState({ matches: json });
     }
 
+    appendMatches(json){
+        this.hideSpinner();
+        console.log("Got more matches:", json);
+        let matches = [
+            ...this.state.matches,
+            ...json
+        ];
+        this.setState({ matches }, () => console.log(this.state.matches));
+    }
+
     hideSpinner(){
         this.setState({ showSpinner: false });
     }
 
     showSpinner(){
         this.setState({ showSpinner: true });
+    }
+
+    getMoreMatches(){
+        this.showSpinner();
+        this.setState({
+            beginIndex: this.state.beginIndex + 10,
+            endIndex: this.state.endIndex + 10
+        },
+        () => {
+            getSummonerMatches(this.state.summonerName, this.state.beginIndex, this.state.endIndex)
+                .then(json => this.appendMatches(json));
+        });
+
     }
 
     componentDidMount(){
@@ -355,10 +394,11 @@ export default class MainPage extends Component {
                 <MainMenu {...this}/>
                 <Segment.Group>
                     <Segment>
-                        <Header as='h1'>{this.state.summonerName}</Header>
-                    </Segment>
-                    <Segment>
-                        <Loader style={{ padding: '1em' }} active={this.state.showSpinner} />
+                        {this.state.summonerName ? 
+                            <Header as='h1'>{this.state.summonerName}</Header>
+                            :
+                            <Header as='h1'>Search for a summoner above</Header>
+                        }
                     </Segment>
                     <Segment>
                         <Grid columns="equal" divided='vertically'>
@@ -366,6 +406,14 @@ export default class MainPage extends Component {
                             {/*<MatchItem match={testObj} />*/}
                         </Grid>
                     </Segment>
+                    <Segment>
+                        <Loader style={{ padding: '1em' }} active={this.state.showSpinner} />
+                    </Segment>
+                    { this.state.matches.length > 0 &&
+                            <Segment>
+                                <Button onClick={this.getMoreMatches} content="Get more matches" />
+                            </Segment>
+                    }
                 </Segment.Group>
             </Container>
         );
