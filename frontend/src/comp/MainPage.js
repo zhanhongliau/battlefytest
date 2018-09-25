@@ -13,7 +13,8 @@ import {
     Button,
     Header,
     Loader,
-    Image
+    Image,
+    Popup
 } from 'semantic-ui-react';
 import moment from 'moment';
 
@@ -226,25 +227,28 @@ class MainMenu extends Component{
     }
 }
 
-const ITEM_URL='http://ddragon.leagueoflegends.com/cdn/6.24.1/img/item/';
+const ITEM_URL='http://ddragon.leagueoflegends.com/cdn/8.18.2/img/item/';
 
-const Item = ({id}) => (
+const Item = ({id, name}) => (
     id ?
-        <Image src={ITEM_URL + id + '.png'} />
+        <Popup
+            trigger={<Image src={ITEM_URL + id + '.png'} />}
+            content={name}
+        />
         :
         null
 );
 
 const MatchItem = ({match}) => (
-    <Grid.Row>
+    <Grid.Row as={Segment}>
         <Grid.Column>
             <Header as='h3'>General</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment>
                     {match.stats.win ?
-                            <Header as='h5' color='green'>Victory</Header>
-                            :
-                            <Header as='h5' color='red'>Defeat</Header>
+                        <Header as='h5' color='green'>Victory</Header>
+                        :
+                        <Header as='h5' color='red'>Defeat</Header>
                     }
                 </Segment>
                 <Segment>
@@ -262,19 +266,19 @@ const MatchItem = ({match}) => (
                     <Header as='h4'>Items:</Header>
                     <Grid columns='equal'>
                         <Grid.Row>
-                            <Grid.Column><Item id={match.stats.item0} /></Grid.Column>
-                            <Grid.Column><Item id={match.stats.item1} /></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item0} name={match.itemNames.item0}/></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item1} name={match.itemNames.item1}/></Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column><Item id={match.stats.item2} /></Grid.Column>
-                            <Grid.Column><Item id={match.stats.item3} /></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item2} name={match.itemNames.item2}/></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item3} name={match.itemNames.item3}/></Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column><Item id={match.stats.item4} /></Grid.Column>
-                            <Grid.Column><Item id={match.stats.item5} /></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item4} name={match.itemNames.item4}/></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item5} name={match.itemNames.item5}/></Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column><Item id={match.stats.item6} /></Grid.Column>
+                            <Grid.Column><Item id={match.stats.item6} name={match.itemNames.item6}/></Grid.Column>
                         </Grid.Row>
                     </Grid>
                 </Segment>
@@ -290,7 +294,7 @@ const MatchItem = ({match}) => (
             <Header as='h3'>Champion Details</Header>
             <Segment.Group style={{padding: '1em'}}>
                 <Segment basic vertical>
-                    <Header as='h4'>Champion:</Header> {match.championId}
+                    <Header as='h4'>Champion:</Header> {match.championName}
                 </Segment>
                 <Segment basic vertical>
                     <Header as='h4'>Champion Level:</Header> {match.stats.champLevel}
@@ -354,7 +358,9 @@ export default class MainPage extends Component {
                         <Header as='h1'>{this.state.summonerName}</Header>
                     </Segment>
                     <Segment>
-                        <Loader active={this.state.showSpinner} />
+                        <Loader style={{ padding: '1em' }} active={this.state.showSpinner} />
+                    </Segment>
+                    <Segment>
                         <Grid columns="equal" divided='vertically'>
                             {this.state.matches.map((match, index) => (<MatchItem key={index} match={match} />))}
                             {/*<MatchItem match={testObj} />*/}
