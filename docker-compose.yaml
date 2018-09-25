@@ -1,0 +1,23 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      - RIOT_API_KEY="${RIOT_API_KEY}"
+    ports:
+      - '3030:3030'
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    volumes:
+      - ./config/nginx/:/etc/nginx/conf.d
+
+

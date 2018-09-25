@@ -3,8 +3,6 @@ import logo from './logo.svg';
 import './App.css';
 import MainPage from './comp/MainPage';
 import 'semantic-ui-css/semantic.min.css';
-import dotenv from 'dotenv';
-dotenv.config();
 
 class App extends Component {
     render() {

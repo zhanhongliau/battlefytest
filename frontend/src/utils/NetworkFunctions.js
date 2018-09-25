@@ -1,7 +1,8 @@
 const headers = {
 };
 
-const API_URL = 'http://192.168.56.101:3030/';
+//const API_URL = 'http://192.168.56.101:3030/';
+const API_URL = 'http://192.168.56.101/backend/';
 
 const isGoodStatus = (res) => (
     res.status >= 200 && res.status < 300
