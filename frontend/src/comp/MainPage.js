@@ -349,7 +349,7 @@ export default class MainPage extends Component {
     processMatches(json){
         this.hideSpinner();
         console.log("Got matches:", json);
-        this.setState({ matches: json });
+        this.setState({ matches: json.length > 0 ? json : [] });
     }
 
     appendMatches(json){
@@ -400,17 +400,17 @@ export default class MainPage extends Component {
                             <Header as='h1'>Search for a summoner above</Header>
                         }
                     </Segment>
-                    <Segment>
+                    <Segment basic>
                         <Grid columns="equal" divided='vertically'>
                             {this.state.matches.map((match, index) => (<MatchItem key={index} match={match} />))}
                             {/*<MatchItem match={testObj} />*/}
                         </Grid>
                     </Segment>
-                    <Segment>
-                        <Loader style={{ padding: '1em' }} active={this.state.showSpinner} />
+                    <Segment basic>
+                        <Loader inline style={{ padding: '1em' }} active={this.state.showSpinner} />
                     </Segment>
                     { this.state.matches.length > 0 &&
-                            <Segment>
+                            <Segment basic>
                                 <Button onClick={this.getMoreMatches} content="Get more matches" />
                             </Segment>
                     }
